@@ -1,5 +1,5 @@
 # openCVbyParallel-Computing
-## 병렬 구조를 통한 openCV 활용
+## 병렬 구조를 통한 실시간 영상 사람 추론 파이프라인
 
 ### /race-condition: race condition 이론을 설명하기 위한 코드 모음
 
