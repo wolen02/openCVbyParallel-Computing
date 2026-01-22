@@ -8,7 +8,7 @@
 :boundedQueue 이론을 설명하기 위한 코드 모음
 
 /drop
-:drop-oldest방식과 drop-newest 방식을 설명하기 위한 코드 모음
+:drop-oldest방식과 drop-newest 이론을 설명하기 위한 코드 모음
 
 /multprocessing
 :GIL, multi processing, batch 단위 전달 방식에 대한 이론을 설명하기 위한 코드 모음
