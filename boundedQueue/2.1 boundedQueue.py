@@ -57,6 +57,7 @@ def main():
     
     n_tasks = 2000
     n_thread = 2
+    # 큐 사이즈 조절
     q_size = 128
     
     # 실험 결과를 저장하기 위한 저장소
