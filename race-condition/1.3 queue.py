@@ -12,6 +12,7 @@ def work(n_task: int, q: queue.Queue):
         time.sleep(0)
         tmp += 1
     
+    # 경쟁 상태 제거를 위해 큐 사용
     q.put(tmp)
 
 def main():

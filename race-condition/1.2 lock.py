@@ -10,6 +10,7 @@ def work(n_task: int, lock: threading.Lock):
     global count
     
     for i in range(n_task):
+        # 공유변수 lock으로 접근
         with lock:
             tmp = count
             time.sleep(0)
