@@ -64,6 +64,7 @@ def main():
         print(f"총 실행 시간{run_time}")
         print(f"처리율: {throughput}")
         
+        # 엑셀 저장을 위해 추가
         data['실행 횟수'].append(count)
         data['총 실행 시간'].append(run_time)
         data['처리율'].append(throughput)
