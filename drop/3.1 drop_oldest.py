@@ -3,14 +3,18 @@ import queue
 import time
 import pandas as pd
 
+# drop oldest 방식을 적용한 생산자
 def producer(q: queue.Queue, n_tasks: int, producer_fps: float, dropped: list, lock: threading.Lock):
     
+    # frame 읽어오는 상황 가정
     interval = 1 / producer_fps
+    
     
     for i in range(n_tasks):
         
         time.sleep(interval)
         
+        # 큐가 꽉차면 작업 하나 버리고 다시 시도
         try:
             input_time = time.perf_counter()
             q.put_nowait((i, input_time))
@@ -26,9 +30,10 @@ def producer(q: queue.Queue, n_tasks: int, producer_fps: float, dropped: list, l
                 pass
         
 
-
+# 생산자의 큐로부터 값 가져오기
 def consumer(q: queue.Queue, consumer_fps: float, latencies: list, count: list, lock):
     
+    # frame 읽어오는 상황 가정
     interval = 1 / consumer_fps
     
     while True:
@@ -57,12 +62,14 @@ def main():
     producer_fps = 60.0
     consumer_fps = 20.0
     
+    # 실험 결과를 저장하기 위한 저장소
     data = {'실행 횟수': []
             , '총 실행시간': []
             , '버린 작업개수': []
             , '처리율': []
             , '상위 5% 지연율': []}
     
+    # 실험 30회 진행
     for j in range(30):
     
         count = [0]
@@ -82,13 +89,15 @@ def main():
             ths.append(threading.Thread(target=consumer, args=(q, consumer_fps, latencies, count, lock)))
         
         start_time = time.perf_counter()
-            
+        
+        # 스레드 시작    
         for th in ths:
             th.start()
         
         th_p.start()
         th_p.join()
         
+        # 스레드 수만큼 None 전달하여 종료 신호 전달
         for i in range(n_thread):
             q.put((None, None))
         
@@ -97,6 +106,7 @@ def main():
         
         q.join()
         
+        # 지표 정리
         end_time = time.perf_counter()
             
         run_time = end_time - start_time
@@ -116,7 +126,8 @@ def main():
         data['버린 작업개수'].append(dropped[0])
         data['처리율'].append(throughput)
         data['상위 5% 지연율'].append(p95_latency)
-        
+    
+    # 엑셀에 저장    
     df = pd.DataFrame(data)
     df.to_excel('/Users/wnwlt/Desktop/실험 결과/drop_oldest.xlsx', index=True, sheet_name='drop')
 
