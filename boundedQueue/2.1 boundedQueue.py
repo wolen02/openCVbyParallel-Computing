@@ -4,7 +4,7 @@ import time
 import random
 import pandas as pd
 
-
+# in_q에 끝난 작업 전달(생산자)
 def producer(n_tasks: int, in_q: queue.Queue):
     
     for i in range(n_tasks):
@@ -13,7 +13,8 @@ def producer(n_tasks: int, in_q: queue.Queue):
         producer_enlapsed_time = time.perf_counter() - input_time
         in_q.put((i,input_time, producer_enlapsed_time))
         
-    
+        
+# in_q에서 끝난 작업 out_q에 전달 
 def consumer(in_q: queue.Queue, out_q: queue.Queue):
     
     out_count = 0
@@ -58,6 +59,7 @@ def main():
     n_thread = 2
     q_size = 128
     
+    # 실험 결과를 저장하기 위한 저장소
     data = {'실행 횟수': []
             , '총 실행시간': []
             , '평균 큐 사이즈': []
@@ -66,6 +68,7 @@ def main():
             , '처리율': []
             , '상위 5% 지연율': []}
     
+    # 실험 30회 실행
     for j in range(30):
         
         count = 0
@@ -74,6 +77,7 @@ def main():
         producer_enlapsed_time = 0
         consumer_enlapsed_time = 0
         
+        # 경쟁상태를 없애기 위한 큐 생성
         in_q = queue.Queue(maxsize=q_size)
         out_q = queue.Queue()
         
@@ -96,6 +100,7 @@ def main():
             
         th_p.join() 
 
+        # 작업이 끝나면 스레드 수만큼 None을 넣어 종료 신호 알리기
         for i in range(n_thread):
             in_q.put((None, None, None))   
         
@@ -106,6 +111,7 @@ def main():
         
         end_time = time.perf_counter()
         
+        # 지표 정리
         for out in range(n_thread):
             
             out_count, out_latencies, out_accum_queue_size_observed, out_producer_enlapsed_time, out_consumer_enlapsed_time = out_q.get()
@@ -147,7 +153,8 @@ def main():
         data['소비자 처리율'].append(consumer_throughput)
         data['처리율'].append(throughput)
         data['상위 5% 지연율'].append(p95_latency)
-        
+    
+    # 엑셀에 저장     
     df = pd.DataFrame(data)
     df.to_excel('/Users/wnwlt/Desktop/실험 결과/backpressure_qsize128.xlsx', index=True, sheet_name='backpressure')
     
