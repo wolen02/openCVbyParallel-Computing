@@ -59,7 +59,7 @@ def main():
         # 작업 시작 시간
         start_time = time.perf_counter()
         
-        # 멀티 프로세스 구동
+        # CPU bound 연산 멀티 프로세스로 실행
         with ProcessPoolExecutor(max_workers=n_worker) as ex:
             futures = [ex.submit(job, 5000) for i in range(n_tasks)]            
             

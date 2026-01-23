@@ -38,7 +38,7 @@ def main():
 
         start_time = time.perf_counter()
         
-        # 스레드 실행
+        # CPU bound 연산 멀티 스레드로 실행
         with ThreadPoolExecutor(max_workers=n_worker) as ex:
             futures = [ex.submit(burn_cpu, 5000) for i in range(n_tasks)]
             submit_done_time = time.perf_counter()
